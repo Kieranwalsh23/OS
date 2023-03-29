@@ -6,7 +6,7 @@ kernel_load:
     mov AH, 0x02
     ; Set AL to number of sectors from the drive we are going to load
     ; (((FileSize)-512)/512) Sectors
-    mov AL, 0x09
+    mov AL, [ SECTOR_SIZE ]
     ; BX – Memory address to load the Kernel into (We have this stored in our KERNEL_ADDR)
     mov BX, KERNEL_ADDR
     ; CH – Cylinder. Set to 0x00
@@ -21,13 +21,12 @@ kernel_load:
     ; Check if the disk read was successful
     jc disk_read_error
     ; Check if the disk sector was successful
-    cmp AL, 0x09
+    cmp AL, [ SECTOR_SIZE ]
     jne disk_sector_error
     ; Pop registers
     popa
     ; Return to the main program
     ret
-
 
 ; Print error message if disk read was unsuccessful
 disk_read_error:
@@ -51,11 +50,11 @@ disk_sector_error:
 done:
     jmp $
 
-
-
-; Data
+; Data / Variables
 BOOT_DRIVE DB 0
 SECTOR_ERROR_MSG DB "SECTOR ERROR Message", 0
 READ_ERROR_MSG DB "READ ERROR Message", 0
-
+; (((FileSize)-512)/512) Sectors ==> 25 (decimal) ==> 0x19 (hex)
+; Current File Size: 13,312 bytes
+SECTOR_SIZE DB 0x19
 

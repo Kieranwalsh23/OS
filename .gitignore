@@ -4,3 +4,6 @@
 # make and build files
 *.o
 *.bin
+
+# ignore .vscode directory
+.vscode
