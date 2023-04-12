@@ -16,6 +16,8 @@
 
 // Include Headers
 #include "console.h"
+#include "stdint.h"
+#include "portmap.h"
 
 // VGA Buffer Constants
 #define VGA_WIDTH 80
@@ -67,6 +69,10 @@ void clear_terminal() {
 		VGA_BUFFER[i] = 0;
 		VGA_BUFFER[i+2] = DEFAULT_STYLE_BYTE;
 	}
+    update_cursor();
+    // TODO: Remove after lab assignment is complete.
+    // Only needed to prove that the cursor is being updated. and get_cursor_position() is working.
+    print_int(get_cursor_position());
 }
 
 /**
@@ -77,10 +83,16 @@ void print_character(char c){
     // if it's a special character, handle it
     if(c < 32 || c == 127) {
         handle_special_characters(c);
+        update_cursor();
+        // TODO: Remove after lab assignment is complete.
+        // Only needed to prove that the cursor is being updated. and get_cursor_position() is working.
+        print_int(get_cursor_position());
         return;
     }
 	VGA_BUFFER[terminal_position++] = c;
 	VGA_BUFFER[terminal_position++] = 0x07;
+    update_cursor();
+    
 	
 }
 
@@ -106,6 +118,7 @@ void print_character_with_color(char c, VGA_Color background, VGA_Color font) {
     // if it's a special character, handle it
     if(c < 32 || c == 127) {
         handle_special_characters(c);
+        update_cursor();
         return;
     }
     // Take the background color and shift it 4 bits to the left
@@ -115,4 +128,93 @@ void print_character_with_color(char c, VGA_Color background, VGA_Color font) {
     // print the character
     VGA_BUFFER[terminal_position++] = c;
     VGA_BUFFER[terminal_position++] = color_byte;
+    update_cursor();
+}
+
+/**
+ * What we want to do is to take the current position,
+ * translate it into two 8-bit binary numbers,
+ * and write those binary numbers at the appropriate high and low control registers.
+ * Note that the position is in the 80x25 grid and does NOT take into account the style byte.
+ * Therefore, the position we want to write is terminal_position >> 1.
+*/
+void update_cursor() {
+    uint16_t cursor_position = terminal_position >> 1;
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t)(cursor_position & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t)((cursor_position >> 8) & 0xFF));
+}
+
+/**
+ * Get the current cursor position
+*/
+uint16_t get_cursor_position() {
+	uint16_t cursor_position = 0;
+	outb(0x3D4, 0x0F);
+	cursor_position |= inb(0x3D5);
+	outb(0x3D4, 0x0E);
+	cursor_position |= ((uint16_t)inb(0x3D5)) << 8;
+	return cursor_position;
+}
+
+/**
+ * Convert int to string, print string
+*/
+void print_int(int num) {
+    char str[12];
+    itoa(num, str, 10);
+    print_string(str);
+}
+
+/**
+ * Implement itoa function
+*/
+void itoa(int num, char* str, int base) {
+    // Handle 0 explicitely, otherwise empty string is printed for 0
+    int i = 0;
+    int isNegative = 0;
+    // Process individual digits
+    if(num == 0) {
+        str[i++] = '0';
+        str[i] = '\0';
+        return;
+    }
+    // if the number is negative, make it positive and set the isNegative flag
+    if(num < 0 && base == 10) {
+        isNegative = 1;
+        num = -num;
+    }
+    // Process individual digits
+    while(num != 0) {
+        int rem = num % base;
+        str[i++] = (rem > 9) ? (rem-10) + 'a' : rem + '0';
+        num = num / base;
+    }
+    // If number is negative, append '-'
+    if(isNegative) {
+        str[i++] = '-';
+    }
+    // Append string terminator
+    str[i] = '\0';
+    // reverse the string
+    reverse(str, i);
+}
+
+/**
+ * implement reverse function
+*/
+void reverse(char* str, int length) {
+    // start from two corners
+    int start = 0;
+    // end index of the string
+    int end = length - 1;
+    // swap characters starting from two corners
+    while(start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
 }

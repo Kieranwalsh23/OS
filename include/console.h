@@ -1,3 +1,4 @@
+#include "stdint.h"
 #ifndef H_CONSOLE
 #define H_CONSOLE
 typedef enum {
@@ -23,4 +24,9 @@ void print_character(char c);
 void print_string(char* str);
 void print_line(char* str);
 void print_character_with_color(char c, VGA_Color background, VGA_Color font);
+void update_cursor();
+uint16_t get_cursor_position();
+void itoa(int num, char* str, int base);
+void print_int(int num);
+void reverse(char* str, int len);
 #endif

@@ -1,3 +1,4 @@
+#include "stdint.h"
 #ifndef H_KEYBOARD
 #define H_KEYBOARD
 static char charmap[256] =
@@ -13,6 +14,5 @@ static char charmap[256] =
 '8',  '9',  '-',  '4',  '5',  '6',  '+',  '1',
 '2',  '3',  '0',  '.',  0,   0,   0,   0
 };
-unsigned char inb(unsigned short port);
-unsigned char scan(void);
+uint8_t scan(void);
 #endif
