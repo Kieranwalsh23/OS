@@ -29,4 +29,6 @@ uint16_t get_cursor_position();
 void itoa(int num, char* str, int base);
 void print_int(int num);
 void reverse(char* str, int len);
+void change_default_font_color(VGA_Color color);
+void change_default_background_color(VGA_Color color);
 #endif

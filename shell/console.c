@@ -25,11 +25,12 @@
 #define BYTES_PER_CHAR 2
 #define VGA_BYTES_PER_ROW (VGA_WIDTH*BYTES_PER_CHAR)
 #define VGA_TOTAL_BYTES (VGA_BYTES_PER_ROW*VGA_HEIGHT)
-#define DEFAULT_STYLE_BYTE 0x07
-
+// Default Style Byte
+char DEFAULT_STYLE_BYTE =  0x07;
+VGA_Color DEFAULT_FONT_COLOR = 0x07;
+VGA_Color DEFAULT_BACKGROUND_COLOR = 0x00;
 // VGA BUGGER Address
 char* const VGA_BUFFER = (char*) 0xb8000;
-
 // Terminal/Cursor Position
 int terminal_position = 0;
 
@@ -69,10 +70,10 @@ void clear_terminal() {
 		VGA_BUFFER[i] = 0;
 		VGA_BUFFER[i+2] = DEFAULT_STYLE_BYTE;
 	}
+    // set cursor position to 0
+    terminal_position = 0;
+    // update the cursor on screen
     update_cursor();
-    // TODO: Remove after lab assignment is complete.
-    // Only needed to prove that the cursor is being updated. and get_cursor_position() is working.
-    print_int(get_cursor_position());
 }
 
 /**
@@ -84,16 +85,11 @@ void print_character(char c){
     if(c < 32 || c == 127) {
         handle_special_characters(c);
         update_cursor();
-        // TODO: Remove after lab assignment is complete.
-        // Only needed to prove that the cursor is being updated. and get_cursor_position() is working.
-        print_int(get_cursor_position());
         return;
     }
 	VGA_BUFFER[terminal_position++] = c;
 	VGA_BUFFER[terminal_position++] = 0x07;
     update_cursor();
-    
-	
 }
 
 /**
@@ -168,7 +164,7 @@ void print_int(int num) {
 }
 
 /**
- * Implement itoa function
+ * Implement itoa function as a helper function for: print_int(int num)
 */
 void itoa(int num, char* str, int base) {
     // Handle 0 explicitely, otherwise empty string is printed for 0
@@ -202,7 +198,7 @@ void itoa(int num, char* str, int base) {
 }
 
 /**
- * implement reverse function
+ * return string in reverse order
 */
 void reverse(char* str, int length) {
     // start from two corners
@@ -218,3 +214,22 @@ void reverse(char* str, int length) {
         end--;
     }
 }
+
+/**
+ * Change the default font color
+*/
+void change_default_font_color(VGA_Color color) {
+    // set the new default font color
+    DEFAULT_FONT_COLOR = color;
+    DEFAULT_STYLE_BYTE = (DEFAULT_BACKGROUND_COLOR << 4) | DEFAULT_FONT_COLOR;
+}
+
+/**
+ * Change the default background color
+*/
+void change_default_background_color(VGA_Color color) {
+    // set the new default background color
+    DEFAULT_BACKGROUND_COLOR = color;
+    DEFAULT_STYLE_BYTE = (DEFAULT_BACKGROUND_COLOR << 4) | DEFAULT_FONT_COLOR;
+}
+
