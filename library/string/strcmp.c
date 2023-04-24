@@ -15,6 +15,7 @@ int strcmp(const char* str1, const char* str2) {
         str1++;
         str2++;
     }
+    // Return the difference between the two strings
     return *(const unsigned char*)str1 - *(const unsigned char*)str2;
 }
 
@@ -78,4 +79,25 @@ void clear_string(char* str) {
     while (*str) {
         *str++ = '\0';
     }
+}
+
+/**
+ * Find if a string contains a substring
+*/
+int str_contains(char* str, char* substr) {
+    // Find if the string contains the substring
+    while (*str) {
+        char* str1 = str;
+        char* str2 = substr;
+        while (*str1 && *str2 && !(*str1 - *str2)) {
+            str1++;
+            str2++;
+        }
+        if (!*str2) {
+            return 1;
+        }
+        str++;
+    }
+    // Return false
+    return 0;
 }

@@ -24,55 +24,54 @@ char* command_prompt = "~> ";
 */
 char* command_buffer = "";
 
-void handle_font_color_choice(char* color) {
-    // Do a string compare to see if the color is valid,
-    // then get the color code and set the font color
-    if (strcmp(color, "0") == 0 || strcmp(color, "black") == 0) {
+void handle_font_color_choice() {
+    // Check if color or color number is contained in the command_buffer
+    if(str_contains(command_buffer, "black") || str_contains(command_buffer, "0")) {
         change_default_font_color(BLACK);
     }
-    else if (strcmp(color, "1") == 0 || strcmp(color, "blue") == 0) {
+    else if(str_contains(command_buffer, "blue") || str_contains(command_buffer, "1")) {
         change_default_font_color(BLUE);
     }
-    else if (strcmp(color, "2") == 0 || strcmp(color, "green") == 0) {
+    else if(str_contains(command_buffer, "green") || str_contains(command_buffer, "2")) {
         change_default_font_color(GREEN);
     }
-    else if (strcmp(color, "3") == 0 || strcmp(color, "cyan") == 0) {
+    else if(str_contains(command_buffer, "cyan") || str_contains(command_buffer, "3")) {
         change_default_font_color(CYAN);
     }
-    else if (strcmp(color, "4") == 0 || strcmp(color, "red") == 0) {
+    else if(str_contains(command_buffer, "red") || str_contains(command_buffer, "4")) {
         change_default_font_color(RED);
     }
-    else if (strcmp(color, "5") == 0 || strcmp(color, "magenta") == 0) {
+    else if(str_contains(command_buffer, "magenta") || str_contains(command_buffer, "5")) {
         change_default_font_color(MAGENTA);
     }
-    else if (strcmp(color, "6") == 0 || strcmp(color, "brown") == 0) {
+    else if(str_contains(command_buffer, "brown") || str_contains(command_buffer, "6")) {
         change_default_font_color(BROWN);
     }
-    else if (strcmp(color, "7") == 0 || strcmp(color, "light_gray") == 0) {
+    else if(str_contains(command_buffer, "light gray") || str_contains(command_buffer, "7")) {
         change_default_font_color(LIGHT_GRAY);
     }
-    else if (strcmp(color, "8") == 0 || strcmp(color, "dark_gray") == 0) {
+    else if(str_contains(command_buffer, "dark gray") || str_contains(command_buffer, "8")) {
         change_default_font_color(DARK_GRAY);
     }
-    else if (strcmp(color, "9") == 0 || strcmp(color, "light_blue") == 0) {
+    else if(str_contains(command_buffer, "light blue") || str_contains(command_buffer, "9")) {
         change_default_font_color(LIGHT_BLUE);
     }
-    else if (strcmp(color, "10") == 0 || strcmp(color, "light_green") == 0) {
+    else if(str_contains(command_buffer, "light green") || str_contains(command_buffer, "10")) {
         change_default_font_color(LIGHT_GREEN);
     }
-    else if (strcmp(color, "11") == 0 || strcmp(color, "light_cyan") == 0) {
+    else if(str_contains(command_buffer, "light cyan") || str_contains(command_buffer, "11")) {
         change_default_font_color(LIGHT_CYAN);
     }
-    else if (strcmp(color, "12") == 0 || strcmp(color, "light_red") == 0) {
+    else if(str_contains(command_buffer, "light red") || str_contains(command_buffer, "12")) {
         change_default_font_color(LIGHT_RED);
     }
-    else if (strcmp(color, "13") == 0 || strcmp(color, "light_magenta") == 0) {
+    else if(str_contains(command_buffer, "light magenta") || str_contains(command_buffer, "13")) {
         change_default_font_color(LIGHT_MAGENTA);
     }
-    else if (strcmp(color, "14") == 0 || strcmp(color, "yellow") == 0) {
+    else if(str_contains(command_buffer, "yellow") || str_contains(command_buffer, "14")) {
         change_default_font_color(YELLOW);
     }
-    else if (strcmp(color, "15") == 0 || strcmp(color, "white") == 0) {
+    else if(str_contains(command_buffer, "white") || str_contains(command_buffer, "15")) {
         change_default_font_color(WHITE);
     }
     else {
@@ -99,15 +98,8 @@ void handle_command() {
         return;
     }
     // set the terminal font color to the color specified
-    else if(strcmp(command_buffer, "set-terminal-font-color") == 0) {
-        // TODO: Handle font color choice
-        // // if args is empty, print a color must be provided
-        // if (strcmp(args, "") == 0) {
-        //     print_line("A color must be provided!");
-        // }
-        // else {
-        //     handle_font_color_choice(args);
-        // }
+    else if(str_contains(command_buffer, "set-terminal-font-color")) {
+        handle_font_color_choice();
     }
     // else command not found error
     else {
@@ -153,6 +145,8 @@ void read_command() {
 void main(void) {
     // Clear Terminal
 	clear_terminal();
+    // Set the default font color to cyan (Because I like cyan and you can't stop me)
+    change_default_font_color(CYAN);
     // Print Welcome and prompt
     print_line(welcome_msg);
     print_string(command_prompt);

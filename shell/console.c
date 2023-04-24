@@ -88,7 +88,7 @@ void print_character(char c){
         return;
     }
 	VGA_BUFFER[terminal_position++] = c;
-	VGA_BUFFER[terminal_position++] = 0x07;
+	VGA_BUFFER[terminal_position++] = DEFAULT_STYLE_BYTE;
     update_cursor();
 }
 
