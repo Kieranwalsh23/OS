@@ -13,7 +13,7 @@ uint8_t scan(void) {
     scan = scan & 0x7f;
     if (brk) {
         return key = 0;
-    }    
+    }
     else if (scan != key) {
             return key = scan;
     }

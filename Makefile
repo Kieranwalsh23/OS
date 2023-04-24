@@ -1,5 +1,5 @@
 # Set of .c Files that we will compile
-C_FILES = ./kernel.c ./shell/console.c ./device/keyboard/keyboard.c ./device/portmap.c
+C_FILES = ./kernel.c ./shell/console.c ./device/keyboard/keyboard.c ./device/portmap.c ./library/string/strcmp.c
 # Create set of .o Files by using replacement on C_FILES
 O_FILES = $(C_FILES:.c=.o)
 
