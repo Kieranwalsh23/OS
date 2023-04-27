@@ -81,6 +81,10 @@ void clear_terminal() {
  * and set the style to default (0x07)
 */
 void print_character(char c){
+    // check if we are at the end of the screen
+    if(terminal_position >= VGA_TOTAL_BYTES) {
+        shift_terminal_up();
+    }
     // if it's a special character, handle it
     if(c < 32 || c == 127) {
         handle_special_characters(c);
@@ -231,5 +235,23 @@ void change_default_background_color(VGA_Color color) {
     // set the new default background color
     DEFAULT_BACKGROUND_COLOR = color;
     DEFAULT_STYLE_BYTE = (DEFAULT_BACKGROUND_COLOR << 4) | DEFAULT_FONT_COLOR;
+}
+
+/**
+ * Shift terminal up one line
+*/
+void shift_terminal_up() {
+    // copy the contents of the VGA buffer up one line
+    for(int i=0; i < VGA_TOTAL_BYTES - VGA_BYTES_PER_ROW; i++) {
+        VGA_BUFFER[i] = VGA_BUFFER[i+VGA_BYTES_PER_ROW];
+    }
+    // clear the last line
+    for(int i=VGA_TOTAL_BYTES - VGA_BYTES_PER_ROW; i < VGA_TOTAL_BYTES; i++) {
+        VGA_BUFFER[i] = 0;
+    }
+    // set the terminal position to the start of the last line
+    terminal_position = VGA_TOTAL_BYTES - VGA_BYTES_PER_ROW;
+    // update the cursor
+    update_cursor();
 }
 
