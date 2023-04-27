@@ -31,4 +31,5 @@ void print_int(int num);
 void reverse(char* str, int len);
 void change_default_font_color(VGA_Color color);
 void change_default_background_color(VGA_Color color);
+void shift_terminal_up();
 #endif
